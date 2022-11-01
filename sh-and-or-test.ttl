@@ -1,0 +1,66 @@
+
+
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix test: <http://example.org/testing#> .
+
+test:test_prop
+  a rdf:Property ;
+  rdfs:label "example property" ;
+.
+
+test:class
+  a rdfs:Class ;
+  rdfs:label "Class" ;
+  rdfs:subClassOf rdfs:Class ;
+.
+test:constraint 
+    a sh:NodeShape ;
+    sh:targetClass test:class ;
+    sh:node test:and_prop, test:or_prop  ;
+    sh:message "top level constraint" ;
+.
+test:and_prop
+    a sh:NodeShape ;
+    sh:and ( test:1_or_less test:1_or_more)  ;
+    sh:message "2nd level and constraint" ;
+.
+test:or_prop
+    a sh:NodeShape ;
+    sh:or ( test:0_or_less test:2_or_more)  ;
+    sh:message "2nd level and constraint" ;
+.
+test:1_or_less 
+    a sh:PropertyShape ;
+    sh:path test:test_prop ;
+    sh:maxCount 1 ;
+    sh:message "bottom level constraint, directly failed, message should report" ;
+.
+test:1_or_more 
+    a sh:PropertyShape ;
+    sh:path test:test_prop ;
+    sh:minCount 1 ;
+    sh:message "bottom level constraint, directly failed, message should report" ;
+.
+test:0_or_less 
+    a sh:PropertyShape ;
+    sh:path test:test_prop ;
+    sh:maxCount 0 ;
+    sh:message "bottom level constraint, directly failed, message should report" ;
+.
+test:2_or_more 
+    a sh:PropertyShape ;
+    sh:path test:test_prop ;
+    sh:minCount 2 ;
+    sh:message "bottom level constraint, directly failed, message should report" ;
+.
+test:fail_and_succeed_or
+    a test:class ;
+.
+
+test:fail_or_succeed_and
+    a test:class ;
+    test:test_prop 1 ;
+.
