@@ -164,7 +164,8 @@ exg3601:00019 a s223:System,
         exg3601:00026,
         exg3601:00034,
         exg3601:00041,
-        exg3601:00050 ;
+        exg3601:00050,
+        exg3601:1000 ; # adding manually
     s223:hasProperty exg3601:00032 ;
     s223:hasSystemConnectionPoint exg3601:00055,
         exg3601:00056 ;
@@ -533,3 +534,15 @@ exg3601:00072 a s223:AnalogOutput,
         s223:OutputConnector ;
     rdfs:label "G36_FIG_A_1.damperPosition" ;
     s223:producesOutput exg3601:00030 .
+exg3601:1000 a s223:Device,
+        s223:HeatExchanger ;
+    s223:hasRole s223:Role-Heating ;
+    s223:hasProperty exg3601:1001 .
+exg3601:1001 a s223:ActuatableProperty,
+        s223:Property,
+        s223:QuantifiableActuatableProperty,
+        s223:QuantifiableProperty ;
+    rdfs:label "heating command" ;
+    qudt:hasQuantityKind quantitykind:Temperature ;
+    qudt:unit unit:DEG_F .
+
