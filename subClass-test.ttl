@@ -1,0 +1,42 @@
+
+
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix test: <http://example.org/testing#> .
+
+test:test_prop
+  a rdf:Property ;
+  rdfs:label "example property" ;
+.
+
+test:class
+  a rdfs:Class ;
+  rdfs:label "Class" ;
+  rdfs:subClassOf rdfs:Class ;
+.
+
+test:constraint 
+    a sh:NodeShape ;
+    sh:targetClass test:class  ;
+    sh:message "constraint on class" ;
+    sh:property [
+        sh:path test:test_prop ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ]
+.
+
+test:subclass
+    rdfs:subClassOf test:class ;
+.
+
+test:instance
+    a test:subclass ;
+    test:test_prop 1,2 ;
+.
+
+
+
+
