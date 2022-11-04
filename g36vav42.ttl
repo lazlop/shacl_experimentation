@@ -35,7 +35,7 @@ vav42:vav-with-reheat a sh:NodeShape, owl:Class ;
     sh:targetClass exg3601:VAV_FIGA1 ;
     sh:message "FIG 4-1 invalid" ;
     sh:severity s223:g36 ;
-    sh:property :s223-damper-position, :s223-zone-temp-occ-co2, :s223-discharge-flow, :vav-flow ;
+    sh:property :s223-damper-position, :s223-zone-temp-occ-co2, :s223-discharge-flow, :vav-flow, :window-switch, :test-rdfs, :test-hasQuantityKind, :test-unit;
 #    sh:node :flow_or ;
 .
 
@@ -44,7 +44,13 @@ vav42:vav-with-reheat a sh:NodeShape, owl:Class ;
 
 vav42:heating-signal1 a sh:PropertyShape ;
     sh:path s223:hasProperty ;
-    sh:qualifiedValueShape [ sh:class s223:QuantifiableActuatableProperty  ] ;
+    sh:qualifiedValueShape [sh:class s223:QuantifiableActuatableProperty,
+                            s223:ActuatableProperty,
+                            s223:Property,
+                            s223:QuantifiableProperty ;
+                            qudt:hasQuantityKind quantitykind:Temperature;
+                            qudt:unit unit:DEG_F;
+                           ] ;
     sh:qualifiedMinCount 1 ;
 .
 
@@ -52,21 +58,90 @@ vav42:heating-signal2 a sh:PropertyShape ;
     sh:path s223:contains ;
     sh:qualifiedMinCount 1 ;
     sh:qualifiedValueShape [ 
-        sh:node [
-            sh:class s223:HeatExchanger ;
+
+            sh:class s223:HeatExchanger, s223:Device;
             sh:property [
                 sh:path s223:hasProperty ;
                 sh:qualifiedMinCount 1 ;
-                sh:qualifiedValueShape [ sh:class s223:QuantifiableActuatableProperty ] ;
+                sh:qualifiedValueShape [sh:class s223:QuantifiableActuatableProperty,
+                                        s223:ActuatableProperty,
+                                        s223:Property,
+                                        s223:QuantifiableProperty ;
+                                        qudt:hasQuantityKind quantitykind:FLOW;
+                                        qudt:unit unit:DEG_C;
+                                       
+                                       
+                                       ] ;
                 
             ] ;
-        ] ;
     ] ;
 .
 
 
 
 
+:window-switch a sh:PropertyShape ;
+        sh:path s223:contains ;
+        sh:qualifiedMinCount 1 ;
+        sh:qualifiedValueShape [    #00026
+            sh:class s223:Connectable,
+                     s223:Device,
+                     s223:Sensor ;
+            rdfs:label "ZN-WINDOW-SWITCH" ;
+            sh:property [
+                sh:path s223:observesProperty;
+                #00027
+                sh:class s223:EnumerableProperty,
+                         s223:EnumeratedObservableProperty,
+                         s223:ObservableProperty,
+                         s223:Property ;
+                rdfs:label "ZN-WINDOW-SWITCH.Intrusion" ;
+                s223:hasEnumerationKind s223:EnumerationKind-OnOff;
+            
+            
+            
+            
+            
+            ];
+                     
+
+
+      ] ;
+
+.
+
+
+
+:test-rdfs a sh:PropertyShape ;
+    sh:path s223:contains ;
+    sh:qualifiedMinCount 1 ;
+    sh:qualifiedValueShape [
+        sh:class s223:check-rdfs;
+        rdfs:label "I-WANT-A-WINDOW" ;
+        
+        ];
+.
+
+
+
+:test-hasQuantityKind a sh:PropertyShape ;
+    sh:path s223:contains ;
+    sh:qualifiedMinCount 1 ;
+    sh:qualifiedValueShape [
+        sh:class s223:check-hasQuantityKind;
+        qudt:hasQuantityKind quantitykind:FLOW;
+        
+        ];
+.
+
+:test-unit a sh:PropertyShape ;
+    sh:path s223:contains ;
+    sh:qualifiedMinCount 1 ;
+    sh:qualifiedValueShape [
+        sh:class s223:check-unit;
+        qudt:unit unit:DEG_C;
+        ];
+.
 
 
 

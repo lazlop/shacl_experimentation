@@ -165,7 +165,10 @@ exg3601:00019 a s223:System,
         exg3601:00034,
         exg3601:00041,
         exg3601:00050,
-        exg3601:1000 ; # adding manually
+        exg3601:1000 , # adding manually
+        exg3601:1002 , # adding manually
+        exg3601:1003 , # adding manually
+        exg3601:1004 ; # adding manually
     s223:hasProperty exg3601:00032 ;
     s223:hasSystemConnectionPoint exg3601:00055,
         exg3601:00056 ;
@@ -545,4 +548,14 @@ exg3601:1001 a s223:ActuatableProperty,
     rdfs:label "heating command" ;
     qudt:hasQuantityKind quantitykind:Temperature ;
     qudt:unit unit:DEG_F .
+
+exg3601:1002 a s223:check-rdfs;
+    rdfs:label "I-WANT-A-SENSOR" .
+
+
+exg3601:1003 a s223:check-hasQuantityKind;
+    qudt:hasQuantityKind quantitykind:Temperature.
+
+exg3601:1004 a s223:check-unit;
+    qudt:unit unit:DEG_F.
 
