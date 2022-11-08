@@ -21,126 +21,186 @@
 
 
 
+
+
+
 vav42:vav-with-reheat a sh:NodeShape, owl:Class ;
     sh:targetClass exg3601:VAV_FIGA1 ;
-    sh:message "FIG 4-2 invalid" ;
+    sh:message "FIG 4-2, which is 'vav-with-reheat', is invalid" ;
     sh:severity s223:g36 ;
-    sh:or ( vav42:heating-signal1 vav42:heating-signal2 ) ;
+    sh:or (
+        [
+            sh:property vav42:heating-form-contains;  #similar to 'hasPart' in BRICK
+        ]
+        [
+            sh:property vav42:heating-command-property; #similar to 'hasPoint' in BRICK
+        ]
+
+    )
 .
-
-
 
 :vav-cooling-only a sh:NodeShape;
     #rdfs:subClassOf vav42:vav-with-reheat ;
     sh:targetClass exg3601:VAV_FIGA1 ;
-    sh:message "FIG 4-1 invalid" ;
+    sh:message "FIG 4-1, which is 'vav-cooling-only', is invalid" ;
     sh:severity s223:g36 ;
-    sh:property :s223-damper-position, :s223-zone-temp-occ-co2, :s223-discharge-flow, :vav-flow, :window-switch, :test-rdfs, :test-hasQuantityKind, :test-unit;
+    sh:property :s223-damper-position, :s223-zone-temp-occ-co2, :s223-discharge-flow, :vav-flow, :window-switch;
 #    sh:node :flow_or ;
 .
 
 
-
-
-vav42:heating-signal1 a sh:PropertyShape ;
-    sh:path s223:hasProperty ;
-    sh:qualifiedValueShape [sh:class s223:QuantifiableActuatableProperty,
-                            s223:ActuatableProperty,
-                            s223:Property,
-                            s223:QuantifiableProperty ;
-                            qudt:hasQuantityKind quantitykind:Temperature;
-                            qudt:unit unit:DEG_F;
-                           ] ;
+vav42:heating-form-contains a sh:PropertyShape;
+    sh:path s223:contains;
     sh:qualifiedMinCount 1 ;
+    sh:qualifiedValueShape [
+        sh:class s223:HeatExchanger, s223:Device;
+        sh:node vav42:heating-heat-exchanger;
+    ]; 
 .
 
-vav42:heating-signal2 a sh:PropertyShape ;
-    sh:path s223:contains ;
-    sh:qualifiedMinCount 1 ;
-    sh:qualifiedValueShape [ 
+vav42:heating-heat-exchanger a sh:NodeShape;
+    # checking exg3601:1000
+    sh:property [
+        sh:path s223:hasRole;
+        sh:hasValue s223:Role-Heating ;
+        sh:minCount 1;
+        sh:message "Check if vav42:heating-signal2 returns violation for s223:Role-Heating";
+    ];
+    sh:property vav42:heating-command-property;
+.
 
-            sh:class s223:HeatExchanger, s223:Device;
+vav42:heating-command-property a sh:PropertyShape ;
+    # checking exg3601:1001
+    sh:path s223:hasProperty ;
+    sh:qualifiedMinCount 1 ;
+    sh:qualifiedValueShape [
+        sh:class s223:QuantifiableActuatableProperty,
+        s223:ActuatableProperty,
+        s223:Property,
+        s223:QuantifiableProperty ;
+        sh:node [
             sh:property [
-                sh:path s223:hasProperty ;
-                sh:qualifiedMinCount 1 ;
-                sh:qualifiedValueShape [sh:class s223:QuantifiableActuatableProperty,
-                                        s223:ActuatableProperty,
-                                        s223:Property,
-                                        s223:QuantifiableProperty ;
-                                        qudt:hasQuantityKind quantitykind:FLOW;
-                                        qudt:unit unit:DEG_C;
-                                       
-                                       
-                                       ] ;
-                
-            ] ;
+                sh:path rdfs:label;
+                sh:hasValue "heating command";
+            ];
+            sh:property [
+                sh:path qudt:hasQuantityKind;
+                sh:hasValue quantitykind:Temperature;
+            ];
+            sh:property [
+                sh:path qudt:unit;
+                sh:hasValue unit:DEG_F;
+            ];
+        ];
+                            
+                            
     ] ;
 .
-
-
 
 
 :window-switch a sh:PropertyShape ;
         sh:path s223:contains ;
         sh:qualifiedMinCount 1 ;
-        sh:qualifiedValueShape [    #00026
+        sh:message "window switch doesn't exist or is ill-defined";
+        sh:qualifiedValueShape [ 
             sh:class s223:Connectable,
                      s223:Device,
-                     s223:Sensor ;
-            rdfs:label "ZN-WINDOW-SWITCH" ;
-            sh:property [
-                sh:path s223:observesProperty;
-                #00027
-                sh:class s223:EnumerableProperty,
-                         s223:EnumeratedObservableProperty,
-                         s223:ObservableProperty,
-                         s223:Property ;
-                rdfs:label "ZN-WINDOW-SWITCH.Intrusion" ;
-                s223:hasEnumerationKind s223:EnumerationKind-OnOff;
-            
-            
-            
-            
-            
-            ];
+                     s223:Sensor ;   
+            sh:node :zone-window-switch;
+        ];
                      
+.
 
+:zone-window-switch a sh:NodeShape;
+    # checking exg3601:00026
+    sh:property [
+        sh:path rdfs:label ;
+        sh:hasValue "ZN-WINDOW-SWITCH" ;
+    ];
+    sh:property [
+        sh:path s223:observesProperty;
+        sh:qualifiedMinCount 1 ;
+        sh:qualifiedValueShape [
+            sh:class s223:EnumerableProperty,
+                    s223:EnumeratedObservableProperty,
+                    s223:ObservableProperty,
+                    s223:Property ;
+            sh:node :zone-window-switch-intrusion;
+        ];
+    ];
+.
 
-      ] ;
+:zone-window-switch-intrusion a sh:NodeShape;
+    # checking exg3601:00027
+    sh:property [
+        sh:path rdfs:label ;
+        sh:hasValue "ZN-WINDOW-SWITCH.Intrusion" ;
+    ];
 
+    sh:property [
+        sh:path s223:hasEnumerationKind ;
+        sh:hasValue s223:EnumerationKind-OnOff;
+    ];
 .
 
 
 
+
+:vav-test-group a sh:NodeShape;
+    #rdfs:subClassOf vav42:vav-with-reheat ;
+    sh:targetClass exg3601:VAV_FIGA1 ;
+    sh:message "vav-test-group is invalid" ;
+    sh:severity s223:g36 ;
+    sh:property :test-rdfs, :test-hasQuantityKind, :test-unit;
+#    sh:node :flow_or ;
+.
+
 :test-rdfs a sh:PropertyShape ;
     sh:path s223:contains ;
+    sh:message "test-rdfs doesn't qualify";
     sh:qualifiedMinCount 1 ;
     sh:qualifiedValueShape [
         sh:class s223:check-rdfs;
-        rdfs:label "I-WANT-A-WINDOW" ;
-        
+        sh:node [
+            sh:property [
+                sh:path rdfs:label;
+                sh:hasValue "I-WANT-A-WINDOW" ;
+            ];
         ];
+    ];
 .
 
 
 
 :test-hasQuantityKind a sh:PropertyShape ;
     sh:path s223:contains ;
+    sh:message "test-hasQuantityKind doesn't qualify";
     sh:qualifiedMinCount 1 ;
     sh:qualifiedValueShape [
         sh:class s223:check-hasQuantityKind;
-        qudt:hasQuantityKind quantitykind:FLOW;
-        
+        sh:node [
+            sh:property [
+                sh:path qudt:hasQuantityKind;
+                sh:hasValue quantitykind:FLOW;
+            ];
         ];
+        
+    ];
 .
 
 :test-unit a sh:PropertyShape ;
     sh:path s223:contains ;
+    sh:message "test-unit doesn't qualify";
     sh:qualifiedMinCount 1 ;
     sh:qualifiedValueShape [
         sh:class s223:check-unit;
-        qudt:unit unit:DEG_C;
-        ];
+        sh:node [
+            sh:property [
+                sh:path qudt:unit;
+                sh:hasValue unit:DEG_C;
+            ];
+        ];   
+    ];
 .
 
 

@@ -224,7 +224,9 @@ exg3601:00025 a s223:EnumerableProperty,
 exg3601:00026 a s223:Connectable,
         s223:Device,
         s223:Sensor ;
-    rdfs:label "ZN-WINDOW-SWITCH" ;
+    rdfs:label "LIGHT-SWITCH" ;
+    # I intentionally made rdfs:label "LIGHT-SWITCH"
+    # The correct syntax is rdfs:label "ZN-WINDOW-SWITCH"
     s223:hasMeasurementLocation exg3601:00014 ;
     s223:observesProperty exg3601:00027 .
 exg3601:00027 a s223:EnumerableProperty,
@@ -539,7 +541,9 @@ exg3601:00072 a s223:AnalogOutput,
     s223:producesOutput exg3601:00030 .
 exg3601:1000 a s223:Device,
         s223:HeatExchanger ;
-    s223:hasRole s223:Role-Heating ;
+    s223:hasRole s223:Role-Cooling ;
+    # I intentionally made "s223:hasRole s223:Role-Cooling"
+    # The correct syntax is "s223:hasRole s223:Role-Heating"
     s223:hasProperty exg3601:1001 .
 exg3601:1001 a s223:ActuatableProperty,
         s223:Property,
@@ -547,7 +551,9 @@ exg3601:1001 a s223:ActuatableProperty,
         s223:QuantifiableProperty ;
     rdfs:label "heating command" ;
     qudt:hasQuantityKind quantitykind:Temperature ;
-    qudt:unit unit:DEG_F .
+    qudt:unit unit:DEG_C .
+    # I intentionally made "qudt:unit unit:DEG_C"
+    # The correct syntax is "qudt:unit unit:DEG_F"
 
 exg3601:1002 a s223:check-rdfs;
     rdfs:label "I-WANT-A-SENSOR" .
