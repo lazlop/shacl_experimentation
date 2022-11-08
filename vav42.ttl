@@ -120,7 +120,11 @@ exg3601:00013 a s223:EnumerableProperty,
 exg3601:00014 a p223:Window,
         s223:Connectable,
         s223:Device ;
-    rdfs:label "Window" ;
+    #rdfs:label "Window" ;
+    rdfs:label "WindowOne" ;
+    # I intentionally made "rdfs:label "WindowOne""
+    # The correct syntax is "rdfs:label "Window""
+
     s223:connectedThrough exg3601:00018 ;
     s223:connectedTo exg3601:00005 ;
     s223:hasConnectionPoint exg3601:00015,
@@ -224,7 +228,8 @@ exg3601:00025 a s223:EnumerableProperty,
 exg3601:00026 a s223:Connectable,
         s223:Device,
         s223:Sensor ;
-    rdfs:label "LIGHT-SWITCH" ;
+    rdfs:label "ZN-WINDOW-SWITCH" ;
+    #rdfs:label "LIGHT-SWITCH" ;
     # I intentionally made rdfs:label "LIGHT-SWITCH"
     # The correct syntax is rdfs:label "ZN-WINDOW-SWITCH"
     s223:hasMeasurementLocation exg3601:00014 ;

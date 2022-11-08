@@ -128,6 +128,16 @@ vav42:heating-command-property a sh:PropertyShape ;
             sh:node :zone-window-switch-intrusion;
         ];
     ];
+    sh:property [
+        sh:path s223:hasMeasurementLocation;
+        sh:qualifiedMinCount 1 ;
+        sh:qualifiedValueShape [
+            sh:class p223:Window,
+                    s223:Connectable,
+                    s223:Device;
+            sh:node :window;
+        ];
+    ];
 .
 
 :zone-window-switch-intrusion a sh:NodeShape;
@@ -143,8 +153,17 @@ vav42:heating-command-property a sh:PropertyShape ;
     ];
 .
 
+:window a sh:NodeShape;
+    # checking exg3601:00014
+    sh:property [
+        sh:path rdfs:label ;
+        sh:hasValue "Window" ;
+    ];
+.
 
 
+
+# Below are 4 shape graphs that are used for testing only
 
 :vav-test-group a sh:NodeShape;
     #rdfs:subClassOf vav42:vav-with-reheat ;
@@ -154,6 +173,9 @@ vav42:heating-command-property a sh:PropertyShape ;
     sh:property :test-rdfs, :test-hasQuantityKind, :test-unit;
 #    sh:node :flow_or ;
 .
+
+
+
 
 :test-rdfs a sh:PropertyShape ;
     sh:path s223:contains ;
