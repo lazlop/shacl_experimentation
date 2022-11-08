@@ -35,8 +35,8 @@ vav42:vav-with-reheat a sh:NodeShape, owl:Class ;
     sh:targetClass exg3601:VAV_FIGA1 ;
     sh:message "FIG 4-1 invalid" ;
     sh:severity s223:g36 ;
-    sh:property :s223-damper-position, :s223-zone-temp-occ-co2, :s223-discharge-flow, :vav-flow ;
-#    sh:node :flow_or ;
+    sh:property :s223-damper-position, :s223-zone-temp-occ-co2 ;
+    sh:node :flow_or ;
 .
 
 
