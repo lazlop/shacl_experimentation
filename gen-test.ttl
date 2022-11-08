@@ -18,12 +18,21 @@ test:class
 .
 
 test:constraint 
-    a sh:NodeShape ;
-    sh:targetClass test:class  ;
-    sh:message "constraint on class" ;
+    a sh:NodeShape, rdfs:Class ;
+   # sh:targetClass test:class  ;
+    sh:class test:class ; 
+    sh:message "constraint applied to an invalid class" ;
     sh:property [
         sh:path test:test_prop ;
         sh:minCount 1 ;
+    ]
+.
+test:constraint_sub 
+    rdfs:subClassOf test:constraint  ;
+#    sh:targetClass test:class ;
+    sh:message "subclass constraint on class" ;
+        sh:property [
+        sh:path test:test_prop ;
         sh:maxCount 1 ;
     ]
 .
@@ -34,7 +43,13 @@ test:subclass
 
 test:instance
     a test:subclass ;
-    test:test_prop 1,2 ;
+    a test:constraint_sub ;
+.
+# Testing Targetting
+test:invalid_class_type
+    a test:nonclass ;
+    a test:constraint_sub ;
+    test:test_prop 1  ;
 .
 
 
