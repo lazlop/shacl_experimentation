@@ -7,7 +7,16 @@
 @prefix test: <http://example.org/testing#> .
 @prefix s223: <http://data.ashrae.org/standard223#> .
 
+#test:test_prop
+  #a rdf:Property ;
+  #rdfs:label "example property" ;
+#.
 
+#test:class
+  #a rdfs:Class ;
+  #rdfs:label "Class" ;
+  #rdfs:subClassOf rdfs:Class ;
+#.
 
 test:constraint 
     a sh:NodeShape, rdfs:Class ;
@@ -19,14 +28,27 @@ test:constraint
         sh:maxCount 1 ;
     ]
 .
+test:constraint_sub 
+    a sh:NodeShape, rdfs:Class ;
+    rdfs:subClassOf test:constraint  ;
+#    sh:targetClass test:class ;
+    sh:message "subclass constraint on class" ;
+        sh:property [
+        sh:path test:test_prop ;
+        sh:maxCount 2 ;
+    ]
+.
+
+test:subclass
+    rdfs:subClassOf test:class ;
+.
+
 test:instance
-    #a test:subclass ;
-    #a test:constraint_sub ;
-    a test:class ;
-    a test:constraint ;
-    test:test_prop s223:Connectable;
-    test:test_prop s223:Connection;
-    
+    a test:subclass ;
+    a test:constraint_sub ;
+    #a test:class ;
+    #a test:constraint ;
+    test:test_prop "KFC", "MacDonald", "OAK";
 .
 # Testing Targetting
 #test:invalid_class_type

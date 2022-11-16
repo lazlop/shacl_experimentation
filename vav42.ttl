@@ -9,6 +9,15 @@
 @prefix unit: <http://qudt.org/vocab/unit/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
+@prefix owl: <http://www.w3.org/2002/07/owl#> . # adding manually
+@prefix : <http://data.ashrae.org/standard223/g36/4.1/vav-cooling-only/rules#> . # adding manually
+@prefix vav42: <http://data.ashrae.org/standard223/g36/4.2/vav-with-reheat/rules#> . # adding manually
+@prefix test: <http://example.org/testing#> .# adding manually
+
+<http://data.ashrae.org/standard223/g36/4.2/vav-with-reheat/rules#> a owl:Ontology ; # adding manually
+    owl:imports <http://data.ashrae.org/standard223/g36/4.1/vav-cooling-only/rules#> . # adding manually
+
+
 
 exg3601:00001 a s223:ObservableProperty,
         s223:Property,
@@ -120,7 +129,11 @@ exg3601:00013 a s223:EnumerableProperty,
 exg3601:00014 a p223:Window,
         s223:Connectable,
         s223:Device ;
-    rdfs:label "Window" ;
+    #rdfs:label "Window" ;
+    rdfs:label "WindowOne" ;
+    # I intentionally made "rdfs:label "WindowOne""
+    # The correct syntax is "rdfs:label "Window""
+
     s223:connectedThrough exg3601:00018 ;
     s223:connectedTo exg3601:00005 ;
     s223:hasConnectionPoint exg3601:00015,
@@ -155,8 +168,12 @@ exg3601:00018 a s223:Connection ;
     s223:connectsFrom exg3601:00014 ;
     s223:connectsTo exg3601:00005 ;
     s223:hasMedium s223:Medium-Air .
-exg3601:00019 a s223:System,
-        exg3601:VAV_FIGA1 ;
+exg3601:00019 a s223:System;
+    #a exg3601:VAV_FIGA1 ;
+    a vav42:vav-with-reheat; # adding manually
+    a :vav-test-group; # adding manually
+    #a :vav-cooling-only; # adding manually
+    a exg3601:VAV_FIGA2;
     rdfs:label "VAV_FIG.A1" ;
     s223:contains exg3601:00020,
         exg3601:00022,
@@ -224,6 +241,7 @@ exg3601:00025 a s223:EnumerableProperty,
 exg3601:00026 a s223:Connectable,
         s223:Device,
         s223:Sensor ;
+    #rdfs:label "ZN-WINDOW-SWITCH" ;
     rdfs:label "LIGHT-SWITCH" ;
     # I intentionally made rdfs:label "LIGHT-SWITCH"
     # The correct syntax is rdfs:label "ZN-WINDOW-SWITCH"
@@ -564,4 +582,5 @@ exg3601:1003 a s223:check-hasQuantityKind;
 
 exg3601:1004 a s223:check-unit;
     qudt:unit unit:DEG_F.
+
 

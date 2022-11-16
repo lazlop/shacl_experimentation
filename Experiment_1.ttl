@@ -1,2 +1,62 @@
-PREFIX : <http://example.org/stuff/1.0/>
-(1 [:p :q] ( 2 ) ) :p2 :q2 .
+
+
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix test: <http://example.org/testing#> .
+@prefix s223: <http://data.ashrae.org/standard223#> .
+
+test:test_prop
+  a rdf:Property ;
+  rdfs:label "example property" ;
+.
+
+test:class
+  a rdfs:Class ;
+  rdfs:label "Class" ;
+  rdfs:subClassOf rdfs:Class ;
+.
+
+test:constraint 
+    a sh:NodeShape, rdfs:Class ;
+   # sh:targetClass test:class  ;
+    sh:class test:class ; 
+    sh:message "constraint applied to an invalid class" ;
+    sh:property [
+        sh:path test:test_prop ;
+        sh:maxCount 1 ;
+    ]
+.
+test:constraint_sub 
+    a sh:NodeShape, rdfs:Class ;
+    rdfs:subClassOf test:constraint  ;
+#    sh:targetClass test:class ;
+    sh:message "subclass constraint on class" ;
+        sh:property [
+        sh:path test:test_prop ;
+        sh:maxCount 2 ;
+    ]
+.
+
+test:subclass
+    rdfs:subClassOf test:class ;
+.
+
+test:instance
+    a test:subclass ;
+    a test:constraint_sub ;
+    #a test:class ;
+    #a test:constraint ;
+    test:test_prop "KFC", "MacDonald", "OAK";
+.
+# Testing Targetting
+#test:invalid_class_type
+    #a test:nonclass ;
+    #a test:constraint_sub ;
+    #test:test_prop 1  ;
+#.
+
+
+
+

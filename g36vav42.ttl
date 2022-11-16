@@ -20,28 +20,42 @@
 
 
 
-
-
-
-
-vav42:vav-with-reheat a sh:NodeShape, owl:Class ;
-    sh:targetClass exg3601:VAV_FIGA1 ;
+vav42:vav-with-reheat a sh:NodeShape, owl:Class, rdfs:Class;
+    #sh:targetClass exg3601:VAV_FIGA1 ;
+    #sh:class exg3601:VAV_FIGA1 ;
+    rdfs:subClassOf :vav-cooling-only ;
     sh:message "FIG 4-2, which is 'vav-with-reheat', is invalid" ;
     sh:severity s223:g36 ;
-    sh:or (
-        [
-            sh:property vav42:heating-form-contains;  #similar to 'hasPart' in BRICK
-        ]
-        [
-            sh:property vav42:heating-command-property; #similar to 'hasPoint' in BRICK
-        ]
 
-    )
+    #option1 start
+    sh:property vav42:heating-form-contains;  #similar to 'hasPart' in BRICK;
+    #option1 end
+
+
+    #option2 start
+
+    #sh:or (
+        #[
+        #    sh:property vav42:heating-form-contains;  #similar to 'hasPart' in BRICK
+        #]
+        #[
+        #    sh:property vav42:heating-command-property; #similar to 'hasPoint' in BRICK
+        #]
+    
+    #)
+
+    #option2 end
+
 .
 
-:vav-cooling-only a sh:NodeShape;
+exg3601:VAV_FIGA2
+    rdfs:subClassOf exg3601:VAV_FIGA1 ;
+.
+
+:vav-cooling-only a sh:NodeShape, rdfs:Class;
     #rdfs:subClassOf vav42:vav-with-reheat ;
-    sh:targetClass exg3601:VAV_FIGA1 ;
+    #sh:targetClass exg3601:VAV_FIGA1 ;
+    sh:class exg3601:VAV_FIGA1 ;
     sh:message "FIG 4-1, which is 'vav-cooling-only', is invalid" ;
     sh:severity s223:g36 ;
     sh:property :s223-damper-position, :s223-zone-temp-occ-co2, :s223-discharge-flow, :vav-flow, :window-switch;
@@ -51,6 +65,7 @@ vav42:vav-with-reheat a sh:NodeShape, owl:Class ;
 
 vav42:heating-form-contains a sh:PropertyShape;
     sh:path s223:contains;
+    sh:message "Violation from vav42:heating-form-contains" ;
     sh:qualifiedMinCount 1 ;
     sh:qualifiedValueShape [
         sh:class s223:HeatExchanger, s223:Device;
@@ -72,6 +87,7 @@ vav42:heating-heat-exchanger a sh:NodeShape;
 vav42:heating-command-property a sh:PropertyShape ;
     # checking exg3601:1001
     sh:path s223:hasProperty ;
+    sh:message "Violation for vav42:heating-command-property";
     sh:qualifiedMinCount 1 ;
     sh:qualifiedValueShape [
         sh:class s223:QuantifiableActuatableProperty,
@@ -128,6 +144,16 @@ vav42:heating-command-property a sh:PropertyShape ;
             sh:node :zone-window-switch-intrusion;
         ];
     ];
+    sh:property [
+        sh:path s223:hasMeasurementLocation;
+        sh:qualifiedMinCount 1 ;
+        sh:qualifiedValueShape [
+            sh:class p223:Window,
+                    s223:Connectable,
+                    s223:Device;
+            sh:node :window;
+        ];
+    ];
 .
 
 :zone-window-switch-intrusion a sh:NodeShape;
@@ -143,17 +169,30 @@ vav42:heating-command-property a sh:PropertyShape ;
     ];
 .
 
+:window a sh:NodeShape;
+    # checking exg3601:00014
+    sh:property [
+        sh:path rdfs:label ;
+        sh:hasValue "Window" ;
+    ];
+.
 
 
 
-:vav-test-group a sh:NodeShape;
+# Below are 4 shape graphs that are used for testing only
+
+:vav-test-group a sh:NodeShape, rdfs:Class;
     #rdfs:subClassOf vav42:vav-with-reheat ;
-    sh:targetClass exg3601:VAV_FIGA1 ;
+    #sh:targetClass exg3601:VAV_FIGA1 ;
+    sh:class exg3601:VAV_FIGA2 ;
     sh:message "vav-test-group is invalid" ;
     sh:severity s223:g36 ;
     sh:property :test-rdfs, :test-hasQuantityKind, :test-unit;
 #    sh:node :flow_or ;
 .
+
+
+
 
 :test-rdfs a sh:PropertyShape ;
     sh:path s223:contains ;
