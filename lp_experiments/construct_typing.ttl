@@ -6,14 +6,13 @@
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix test: <http://example.org/testing#> .
 
-test:fail_or_succeed_and
-    a test:class, test:constraint ;
-    test:test_prop 1 ;
-.
-test:fail_and_succeed_or
-    a test:class ;
-.
-
+# test:fail_or_succeed_and
+#     a test:class, test:constraint ;
+#     test:test_prop 1 ;
+# .
+# test:fail_and_succeed_or
+#     a test:class, test:constraint ;
+#.
 test:test_prop
   a rdf:Property ;
   rdfs:label "example property" ;
@@ -121,3 +120,101 @@ test:1_or_more
     sh:minCount 1 ;
     sh:message "bottom level constraint" ;
 .
+
+test:chaining 
+    a test:class, test:chaining_nodeshape ;
+    test:chain_prop test:chaining2 ;
+.
+test:chaining2 
+    a test:class2 ;
+    test:chain_prop test:chaining3 ;
+.
+test:chaining3 
+    a test:class3 ;
+    test:chain_prop 3 ;
+.
+test:chaining_nodeshape
+    a sh:NodeShape ;
+    #sh:property test:cps ;
+    sh:targetClass test:class ;
+    sh:rule [
+        a sh:TripleRule ;
+        sh:object test:chaining_nodeshape2 ;
+        sh:predicate rdf:type ;
+        sh:subject [ 
+            sh:path test:chain_prop ;
+            ] ;
+    ] ;
+.
+test:cps
+    a sh:PropertyShape ;
+    sh:path test:chain_prop ;
+    sh:node test:chaining_nodeshape2 ;
+.
+test:chaining_nodeshape2 a rdfs:Class,
+        sh:NodeShape ;
+    sh:class test:class2 ;
+    sh:property test:cps2 ;
+    sh:rule [ a sh:TripleRule ;
+            sh:object test:chaining_nodeshape3 ;
+            sh:predicate rdf:type ;
+            sh:subject [ sh:path test:chain_prop ] ] .
+
+# test:chaining_nodeshape2
+#     a sh:NodeShape, rdfs:Class ; 
+#     sh:class test:class2 ;
+#     sh:property test:cps2 ;
+#     sh:rule [
+#         a sh:TripleRule ;
+#         sh:object test:chaining_nodeshape3 ;
+#         sh:predicate rdf:type ;
+#         sh:subject [ 
+#             sh:path test:chain_prop ;
+#             ] ;
+#     ] ;
+# .
+test:cps2 
+    a sh:PropertyShape ;
+    sh:path test:chain_prop ;
+    sh:node test:chaining_nodeshape3 ;
+.
+test:chaining_nodeshape3
+    a sh:NodeShape, rdfs:Class ; 
+    sh:class test:class3 ;
+    sh:property test:cps3 ;
+    sh:message "bottom level nodeshape" ;
+.
+test:cps3 
+    a sh:PropertyShape ;
+    sh:path test:chain_prop ;
+    sh:hasValue 1;
+    sh:message "bottom level propshape" ;
+.
+
+# test:chaining_nodeshape3
+#     a sh:NodeShape, rdfs:Class ; 
+#     sh:property [ 
+#         sh:path test:chain_prop ;
+#         sh:hasValue 2 ;
+#         ] ;
+# .
+# test:chaining_propshape
+#     a sh:PropertyShape ;
+#     sh:path test:chain_prop ; 
+#     sh:class test:chaining_nodeshape ;
+# .
+
+
+
+# test:a 
+#     a sh:NodeShape ;
+#     sh:targetClass test:class ;
+#     sh:rule [
+#         a sh:TripleRule ;
+#         sh:object 1 ;
+#         sh:predicate test:test_prop ;
+#         sh:subject [ 
+#             sh:path test:chain_prop ;
+#             ] ;
+#     ] ;
+# .

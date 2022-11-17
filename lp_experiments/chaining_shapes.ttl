@@ -1,0 +1,64 @@
+
+
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix test: <http://example.org/testing#> .
+
+test:test_prop
+  a rdf:Property ;
+  rdfs:label "example property" ;
+.
+
+test:class
+  a rdfs:Class ;
+  rdfs:label "Class" ;
+  rdfs:subClassOf rdfs:Class ;
+.
+
+test:chaining 
+    a test:class, test:chaining_nodeshape ;
+    test:chain_prop test:chaining2 ;
+.
+test:chaining2 
+    a test:class2 ;
+    test:chain_prop test:chaining3 ;
+.
+test:chaining3 
+    a test:class3 ;
+    test:chain_prop 3 ;
+.
+# Has to follow a few steps and place shacl constraints on different targets (rather than single target in and/or example)
+test:chaining_nodeshape
+    a sh:NodeShape, rdfs:Class ;
+    sh:property test:cps ;
+.
+test:cps
+    a sh:PropertyShape ;
+    sh:path test:chain_prop ;
+    sh:node test:chaining_nodeshape2 ;
+.
+
+test:chaining_nodeshape2
+    a sh:NodeShape, rdfs:Class ; 
+    sh:class test:class2 ;
+    sh:property test:cps2 ;
+.
+test:cps2 
+    a sh:PropertyShape ;
+    sh:path test:chain_prop ;
+    sh:node test:chaining_nodeshape3 ;
+.
+test:chaining_nodeshape3
+    a sh:NodeShape, rdfs:Class ; 
+    sh:class test:class3 ;
+    sh:property test:cps3 ;
+    sh:message "bottom level nodeshape" ;
+.
+test:cps3 
+    a sh:PropertyShape ;
+    sh:path test:chain_prop ;
+    sh:hasValue 1;
+    sh:message "bottom level propshape" ;
+.

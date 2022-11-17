@@ -33,38 +33,42 @@ test:or_prop
     sh:message "2nd level and constraint" ;
 .
 test:1_or_less 
-    a sh:PropertyShape ;
-    sh:path test:test_prop ;
-    sh:maxCount 1 ;
-    sh:message "bottom level constraint, directly failed, message should report" ;
-    sh:severity sh:Violation;
+    a sh:NodeShape, rdfs:Class ;
+    sh:property [
+        sh:path test:test_prop ;
+        sh:maxCount 1 ;
+        sh:message "bottom level constraint, directly failed, message should report" ;
+    ] ;
 .
 test:1_or_more 
-    a sh:PropertyShape ;
-    sh:path test:test_prop ;
-    sh:minCount 1 ;
-    sh:message "bottom level constraint, directly failed, message should report" ;
-    sh:severity sh:Violation;
+    a sh:NodeShape, rdfs:Class ;
+    sh:property [
+        sh:path test:test_prop ;
+        sh:minCount 1 ;
+        sh:message "bottom level constraint, directly failed, message should report" ;
+    ] ;
 .
 test:0_or_less 
-    a sh:PropertyShape ;
-    sh:path test:test_prop ;
-    sh:maxCount 0 ;
-    sh:message "bottom level constraint, directly failed, message should report" ;
-    sh:severity sh:Violation;
+    a sh:NodeShape, rdfs:Class ;
+    sh:property[    
+        sh:path test:test_prop ;
+        sh:maxCount 0 ;
+        sh:message "bottom level constraint, directly failed, message should report" ;
+        ];
 .
 test:2_or_more 
-    a sh:PropertyShape ;
-    sh:path test:test_prop ;
-    sh:minCount 2 ;
-    sh:message "bottom level constraint, directly failed, message should report" ;
-    sh:severity sh:Violation;
+    a sh:NodeShape, rdfs:Class ;
+    sh:property[
+        sh:path test:test_prop ;
+        sh:minCount 2 ;
+        sh:message "bottom level constraint, directly failed, message should report" ;
+    ] ;
 .
 test:fail_and_succeed_or
-    a test:class, test:constraint ;
+    a test:class ;
 .
 
 test:fail_or_succeed_and
-    a test:class, test:constraint ;
+    a test:class ;
     test:test_prop 1 ;
 .
