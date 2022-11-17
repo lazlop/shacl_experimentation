@@ -1,0 +1,96 @@
+
+
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix test: <http://example.org/testing#> .
+
+test:test_prop
+  a rdf:Property ;
+  rdfs:label "example property" ;
+.
+
+test:class
+  a rdfs:Class ;
+  rdfs:label "Class" ;
+  rdfs:subClassOf rdfs:Class ;
+.
+
+# Having logic in the constraint 
+test:constraint 
+    a sh:NodeShape, rdfs:Class ;
+    sh:class test:class ; 
+    sh:rule [
+      a sh:SPARQLRule ;
+      sh:construct """
+CONSTRUCT {$this a test:parameter .}
+WHERE {
+$this test:test_prop \"this should also be a parameter\" .
+}
+""" ; ]
+#can also try SPARQLFunctions?
+.
+
+# putting the logic into a property shape
+# this can be used for validation, and then can be reused to identify the node found by the shape
+test:variable_prop_shape
+    a sh:PropertyShape ;
+    sh:path test:test_prop ;
+    sh:hasValue "this should be a variable" ;
+    sh:message "instance is not a valid variable" ;
+.
+
+test:negate_var
+    a sh:NodeShape ;
+    sh:not test:variable_prop_shape  ;
+.
+
+test:constraint2 
+    a sh:NodeShape, rdfs:Class ;
+    sh:class test:class ;
+        sh:property test:variable_prop_shape ;
+        sh:rule [
+            a sh:SPARQLRule ;
+            sh:condition test:variable_prop_shape ;
+            sh:construct """
+        CONSTRUCT {$this a test:variable .}
+        WHERE {}
+        """ ;
+    ] ;
+        sh:property test:variable_prop_shape ;
+        sh:rule [
+            # This rule adds a label if the condition is NOT filled
+            a sh:SPARQLRule ;
+            sh:condition test:negate_var ;
+            sh:construct """
+        CONSTRUCT {$this a test:NOTvariable .}
+        WHERE {}
+        """ ;
+    ] ;
+.
+
+# this instance will also be made a parameter after validation
+test:instance
+    a test:class ;
+    a test:constraint ;
+    test:test_prop "this should also be a parameter" ;
+.
+
+# this one should be made a variable
+test:instance2
+    a test:class ;
+    a test:constraint2 ;
+    test:test_prop "this should be a variable" ;
+.
+
+# this one should trigger a validation error and not be made a variable
+test:instance3
+    a test:class ;
+    a test:constraint2 ;
+    test:test_prop "this should NOT be a variable" ;
+.
+
+
+
+

@@ -1,0 +1,123 @@
+
+
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix test: <http://example.org/testing#> .
+
+test:fail_or_succeed_and
+    a test:class, test:constraint ;
+    test:test_prop 1 ;
+.
+test:fail_and_succeed_or
+    a test:class ;
+.
+
+test:test_prop
+  a rdf:Property ;
+  rdfs:label "example property" ;
+.
+
+test:class
+  a rdfs:Class ;
+  rdfs:label "Class" ;
+  rdfs:subClassOf rdfs:Class ;
+.
+test:constraint 
+    a sh:NodeShape, rdfs:Class ;
+    sh:node test:and_prop, test:or_prop  ;
+    sh:message "top level constraint" ;
+    sh:severity sh:warning ;
+    sh:rule [
+        a sh:TripleRule ;
+        sh:object test:and_prop ;
+        sh:predicate rdf:type ;
+        sh:subject sh:this ;
+    ] ;
+    sh:rule [
+        a sh:TripleRule ;
+        sh:object test:or_prop ;
+        sh:predicate rdf:type ;
+        sh:subject sh:this ;
+    ] ;
+.
+
+# creating negatable shape so that it can be used in a condition 
+test:or_prop
+    a sh:NodeShape, rdfs:Class ;
+    sh:or ( test:0_or_less_nodeshape test:2_or_more_nodeshape )  ;
+    sh:severity sh:warning ;
+    sh:message "2nd level and constraint" ;
+    sh:rule [
+        a sh:TripleRule ;
+        sh:object test:0_or_less_nodeshape ;
+        sh:predicate rdf:type ;
+        sh:subject sh:this ;
+    ] ;
+    sh:rule [
+        a sh:TripleRule ;
+        sh:object test:2_or_more_nodeshape ;
+        sh:predicate rdf:type ;
+        sh:subject sh:this ;
+    ] ;
+.
+test:2_or_more_nodeshape
+    a sh:NodeShape, rdfs:Class ;
+    sh:property test:2_or_more ;
+    sh:message "bottom level node of 2_or_more" ;
+.
+test:2_or_more 
+    a sh:PropertyShape ;
+    sh:path test:test_prop ;
+    sh:minCount 2 ;
+    sh:message "bottom level propshape of 2_or_more, should report" ;
+.
+test:0_or_less_nodeshape;
+    a sh:NodeShape, rdfs:Class ;
+    sh:property test:0_or_less ;
+.
+test:0_or_less 
+    a sh:PropertyShape ;
+    sh:path test:test_prop ;
+    sh:maxCount 0 ;
+    sh:message "bottom level propshape of 0_or_less, should report" ;
+.
+test:and_prop
+    a sh:NodeShape, rdfs:Class ;
+    sh:and ( test:1_or_less test:1_or_more)  ;
+    sh:severity sh:warning ;
+    sh:message "2nd level and constraint" ;
+    sh:rule [
+        a sh:TripleRule ;
+        sh:object test:1_or_less_nodeshape ;
+        sh:predicate rdf:type ;
+        sh:subject sh:this ;
+    ] ;
+    sh:rule [
+        a sh:TripleRule ;
+        sh:object test:1_or_more_nodeshape ;
+        sh:predicate rdf:type ;
+        sh:subject sh:this ;
+    ] ;
+.
+test:1_or_less_nodeshape 
+    a rdfs:Class, sh:NodeShape ;
+    sh:property test:1_or_less ;
+. 
+test:1_or_less
+    a sh:PropertyShape ;
+    sh:path test:test_prop ;
+    sh:maxCount 1 ;
+    sh:message "bottom level constraint" ;
+.
+test:1_or_more_nodeshape
+    a rdfs:Class, sh:NodeShape ;
+    sh:property test:1_or_more ;
+. 
+test:1_or_more 
+    a sh:PropertyShape ;
+    sh:path test:test_prop ;
+    sh:minCount 1 ;
+    sh:message "bottom level constraint" ;
+.
