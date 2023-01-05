@@ -1,0 +1,110 @@
+@prefix ex: <example.org/> .
+@prefix s223: <http://data.ashrae.org/standard223#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+
+ex:1 a s223:Battery ;
+    s223:hasConnectionPoint [
+        s223:hasMedium s223:Medium-Electricity ;
+        a s223:OutletConnectionPoint ;
+    ] ;
+    # s223:hasConnectionPoint [
+    #     s223:hasMedium s223:Medium-Electricity ;
+    #     a s223:InletConnectionPoint ;
+    # ] ;
+    # s223:hasConnectionPoint [
+    #     a s223:BidirectionalConnectionPoint ;
+    #     s223:hasMedium s223:Medium-Electricity ;
+    # ] ;
+.
+# ex:1 a s223:CoolingCoil ; 
+#     s223:hasRole s223:Role-Cooling ;
+#     s223:hasConnectionPoint [
+#         s223:hasMedium s223:Medium-Air ;
+#         a s223:OutletConnectionPoint ;
+#     ] ;
+#     s223:hasConnectionPoint [
+#         s223:hasMedium s223:Medium-Air ;
+#         a s223:InletConnectionPoint ;
+#     ] .
+ex:rule a sh:NodeShape ;
+    sh:targetNode ex:1 ;
+    sh:node [
+        sh:or (
+            sh:property [
+                sh:minCount 1 ;
+                sh:path s223:hasConnectionPoint ;
+                sh:qualifiedMinCount 1 ;
+                sh:qualifiedValueShape [
+                    sh:class s223:BidirectionalConnectionPoint ;
+                    sh:node [
+                        sh:property [
+                            sh:path s223:hasMedium ;
+                            sh:class s223:Medium-Electricity ;
+                        ] ;
+                    ];
+                ] ;
+            ] 
+            sh:node [
+                sh:and (
+                    sh:property [
+                        sh:path s223:hasConnectionPoint ;
+                        sh:qualifiedMinCount 1 ;
+                        sh:qualifiedValueShape [
+                        sh:class s223:OutletConnectionPoint ;
+                        sh:node [
+                            sh:property [
+                            sh:path s223:hasMedium ;
+                            sh:class s223:Medium-Electricity ;
+                            ] ;
+                        ];
+                        ];
+                    ] 
+                    sh:property [
+                        sh:path s223:hasConnectionPoint ;
+                        sh:qualifiedMinCount 1 ;
+                        sh:qualifiedValueShape [
+                        sh:class s223:InletConnectionPoint ;
+                        sh:node [
+                            sh:property [
+                            sh:path s223:hasMedium ;
+                            sh:class s223:Medium-Electricity ;
+                            ] ;
+                        ] ;
+                        ] ;
+                    ] 
+                ) ;
+            ]
+        ) ;
+    ] ;
+    .
+ex:and_clause
+    a sh:NodeShape ;
+        sh:property [
+            sh:minCount 2 ;
+            sh:path s223:hasConnectionPoint ;
+            sh:qualifiedMinCount 1 ;
+            sh:qualifiedValueShape [
+            sh:class s223:OutletConnectionPoint ;
+            sh:node [
+                sh:property [
+                sh:path s223:hasMedium ;
+                sh:class s223:Medium-Electricity ;
+                ] ;
+            ];
+            ];
+        ] ;
+        sh:property [
+            sh:minCount 2 ;
+            sh:path s223:hasConnectionPoint ;
+            sh:qualifiedMinCount 1 ;
+            sh:qualifiedValueShape [
+            sh:class s223:InletConnectionPoint ;
+            sh:node [
+                sh:property [
+                sh:path s223:hasMedium ;
+                sh:class s223:Medium-Electricity ;
+                ] ;
+            ];
+            ] ;
+        ] ;
+.
